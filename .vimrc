@@ -8,7 +8,7 @@ set scrolloff=8
 set number                     " Show current line number
 " set relativenumber             
 set background=dark
-set clipboard=unnamedplus     " Install vim-gtk3 to enable copy-paste
+set clipboard=unnamedplus     " Install 'vim-gtk3' to enable copy-paste OR install 'xclip'
 set timeoutlen=1000
 set ttimeoutlen=10
 set ssop-=options    " do not store global and local values in a session
