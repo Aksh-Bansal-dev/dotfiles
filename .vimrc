@@ -8,7 +8,7 @@ set scrolloff=8
 set number                     " Show current line number
 " set relativenumber             
 set background=dark
-set clipboard=unnamedplus     " Install 'vim-gtk3' to enable copy-paste OR install 'xclip'
+set clipboard=unnamedplus     " Install vim-gtk3 to enable copy-paste
 set timeoutlen=1000
 set ttimeoutlen=10
 set ssop-=options    " do not store global and local values in a session
@@ -114,7 +114,7 @@ nnoremap <M-j> 2<c-w>-
 nnoremap <M-k> 2<c-w>+
 tnoremap <Esc> <C-\><C-n>
 nnoremap <C-p> <cmd>tabe<cr><cmd>Telescope find_files theme=dropdown<cr>
-nnoremap [p <cmd>Telescope find_files theme=dropdown<cr>
+nnoremap <leader>p <cmd>Telescope find_files theme=dropdown<cr>
 nnoremap <leader>f <cmd>lua vim.lsp.buf.formatting()<CR>
 
 " Other options
