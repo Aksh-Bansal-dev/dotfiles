@@ -116,6 +116,7 @@ tnoremap <Esc> <C-\><C-n>
 nnoremap <C-p> <cmd>tabe<cr><cmd>Telescope find_files theme=dropdown<cr>
 nnoremap <leader>p <cmd>Telescope find_files theme=dropdown<cr>
 nnoremap <leader>f <cmd>lua vim.lsp.buf.formatting()<CR>
+command Tq :tabonly 
 
 " Other options
 let g:gruvbox_invert_selection=0
