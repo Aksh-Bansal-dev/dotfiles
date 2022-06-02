@@ -9,7 +9,8 @@ set number                     " Show current line number
 " set relativenumber             
 set background=dark
 set clipboard=unnamedplus     " Install vim-gtk3 to enable copy-paste
-set timeoutlen=1000 set ttimeoutlen=10
+set timeoutlen=1000 
+set ttimeoutlen=10
 set ssop-=options    " do not store global and local values in a session
 set ssop-=folds      " do not store folds
 set cursorline
