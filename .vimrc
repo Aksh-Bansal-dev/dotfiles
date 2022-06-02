@@ -9,8 +9,7 @@ set number                     " Show current line number
 " set relativenumber             
 set background=dark
 set clipboard=unnamedplus     " Install vim-gtk3 to enable copy-paste
-set timeoutlen=1000
-set ttimeoutlen=10
+set timeoutlen=1000 set ttimeoutlen=10
 set ssop-=options    " do not store global and local values in a session
 set ssop-=folds      " do not store folds
 set cursorline
@@ -135,20 +134,11 @@ lua <<EOF
 require'nvim-treesitter.configs'.setup {
   -- One of "all", "maintained" (parsers with maintainers), or a list of languages
   ensure_installed = {"java", "typescript", "javascript", "html", "css", "go", "python"},
-
   -- Install languages synchronously (only applied to `ensure_installed`)
   sync_install = false,
-
-  -- List of parsers to ignore installing
-  ignore_install = {},
-
   highlight = {
     -- `false` will disable the whole extension
     enable = true,
-
-    -- list of language that will be disabled
-    disable = {},
-
     -- Setting this to true will run `:h syntax` and tree-sitter at the same time.
     -- Set this to `true` if you depend on 'syntax' being enabled (like for indentation).
     -- Using this option may slow down your editor, and you may see some duplicate highlights.
