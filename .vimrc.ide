@@ -30,6 +30,7 @@ call plug#begin('~/.vim/plugged')
 
 " Nerdtree
 Plug 'preservim/nerdtree' 
+Plug 'Xuyuanp/nerdtree-git-plugin'
 Plug 'ryanoasis/vim-devicons'
 
 " Comments
@@ -38,8 +39,21 @@ Plug 'tpope/vim-commentary'
 " Theme
 Plug 'morhetz/gruvbox'
 
+" Telescope
+Plug 'nvim-lua/plenary.nvim'
+Plug 'nvim-telescope/telescope.nvim'
+
 " lsp, treesitter, autocomplete
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+Plug 'neovim/nvim-lspconfig'
+Plug 'hrsh7th/nvim-cmp' " Autocompletion plugin
+Plug 'hrsh7th/cmp-nvim-lsp' " LSP source for nvim-cmp
+Plug 'saadparwaiz1/cmp_luasnip' " Snippets source for nvim-cmp
+Plug 'L3MON4D3/LuaSnip' " Snippets plugin
+Plug 'jose-elias-alvarez/null-ls.nvim' " linting, formatting
+
+" Git lines on side
+Plug 'lewis6991/gitsigns.nvim'
 
 " Airlines
 " Plug 'vim-airline/vim-airline'
@@ -87,7 +101,9 @@ endfunction
 
 nnoremap <C-b> :call ToggleTree()<CR>
 map <C-_> :Commentary<CR>
-nnoremap <Tab> gt nnoremap <S-Tab> gT nnoremap <leader>h <C-w>h
+nnoremap <Tab> gt 
+nnoremap <S-Tab> gT 
+nnoremap <leader>h <C-w>h
 nnoremap <leader>j <C-w>j
 nnoremap <leader>k <C-w>k
 nnoremap <leader>l <C-w>l
@@ -97,6 +113,9 @@ nnoremap <M-h> 2<c-w><
 nnoremap <M-j> 2<c-w>-
 nnoremap <M-k> 2<c-w>+
 tnoremap <Esc> <C-\><C-n>
+nnoremap <C-p> <cmd>tabe<cr><cmd>Telescope find_files theme=dropdown<cr>
+nnoremap <leader>p <cmd>Telescope find_files theme=dropdown<cr>
+nnoremap <leader>f <cmd>lua vim.lsp.buf.formatting()<CR>
 command Tq :tabonly 
 
 " Other options
@@ -130,6 +149,93 @@ require'nvim-treesitter.configs'.setup {
   },
 }
 
+require'lspconfig'.pyright.setup{}
+local opts = { noremap=true, silent=true }
+
+-- Use an on_attach function to only map the following keys
+-- after the language server attaches to the current buffer
+local on_attach = function(client, bufnr)
+  vim.api.nvim_set_keymap('n', 'gh', '<cmd>lua vim.diagnostic.open_float()<CR>', opts)
+  vim.api.nvim_set_keymap('n', '[d', '<cmd>lua vim.diagnostic.goto_prev()<CR>', opts)
+  vim.api.nvim_set_keymap('n', ']d', '<cmd>lua vim.diagnostic.goto_next()<CR>', opts)
+  -- Mappings.
+  vim.api.nvim_buf_set_keymap(bufnr, 'n', 'gd', '<cmd>lua vim.lsp.buf.definition()<CR>', opts)
+  vim.api.nvim_buf_set_keymap(bufnr, 'n', 'K', '<cmd>lua vim.lsp.buf.hover()<CR>', opts)
+  vim.api.nvim_buf_set_keymap(bufnr, 'n', '<leader>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
+  if client.name == 'tsserver' then
+    client.resolved_capabilities.document_formatting = false
+  end
+  vim.api.nvim_buf_set_keymap(bufnr, 'n', '<space>f', '<cmd>lua vim.lsp.buf.formatting()<CR>', opts)
+end
+
+local capabilities = vim.lsp.protocol.make_client_capabilities()
+capabilities = require('cmp_nvim_lsp').update_capabilities(capabilities)
+local servers = { 'pyright','tsserver' }
+for _, lsp in pairs(servers) do
+  require('lspconfig')[lsp].setup {
+    on_attach = on_attach,
+    capabilities = capabilities,
+    flags = {
+      debounce_text_changes = 150,
+    }
+  }
+end
+
+-- luasnip setup
+local luasnip = require 'luasnip'
+
+-- nvim-cmp setup
+local cmp = require 'cmp'
+cmp.setup {
+  snippet = {
+    expand = function(args)
+      luasnip.lsp_expand(args.body)
+    end,
+  },
+  mapping = cmp.mapping.preset.insert({
+    ['<C-Space>'] = cmp.mapping.complete(),
+    ['<CR>'] = cmp.mapping.confirm {
+      behavior = cmp.ConfirmBehavior.Replace,
+      select = true,
+    },
+    ['<Tab>'] = cmp.mapping(function(fallback)
+      if cmp.visible() then
+        cmp.select_next_item()
+      elseif luasnip.expand_or_jumpable() then
+        luasnip.expand_or_jump()
+      else
+        fallback()
+      end
+    end, { 'i', 's' }),
+    ['<S-Tab>'] = cmp.mapping(function(fallback)
+      if cmp.visible() then
+        cmp.select_prev_item()
+      elseif luasnip.jumpable(-1) then
+        luasnip.jump(-1)
+      else
+        fallback()
+      end
+    end, { 'i', 's' }),
+  }),
+  sources = {
+    { name = 'nvim_lsp' },
+    { name = 'luasnip' },
+  },
+}
+
+-- null-ls
+local augroup = vim.api.nvim_create_augroup("LspFormatting", {})
+require("null-ls").setup({
+    sources = {
+        require("null-ls").builtins.diagnostics.eslint,
+        require("null-ls").builtins.code_actions.eslint,
+        require("null-ls").builtins.formatting.eslint,
+        require("null-ls").builtins.formatting.prettier
+    },
+})
+
+-- gitsigns setup
+require('gitsigns').setup()
 EOF
 
 " Snippets
