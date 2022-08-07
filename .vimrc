@@ -87,7 +87,9 @@ endfunction
 
 nnoremap <C-b> :call ToggleTree()<CR>
 map <C-_> :Commentary<CR>
-nnoremap <Tab> gt nnoremap <S-Tab> gT nnoremap <leader>h <C-w>h
+nnoremap <Tab> gt 
+nnoremap <S-Tab> gT 
+nnoremap <leader>h <C-w>h
 nnoremap <leader>j <C-w>j
 nnoremap <leader>k <C-w>k
 nnoremap <leader>l <C-w>l
