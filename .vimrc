@@ -38,6 +38,10 @@ Plug 'tpope/vim-commentary'
 " Theme
 Plug 'morhetz/gruvbox'
 
+" Telescope (require BurntSushi/ripgrep)
+Plug 'nvim-lua/plenary.nvim'
+Plug 'nvim-telescope/telescope.nvim'
+
 " lsp, treesitter, autocomplete
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 
@@ -51,6 +55,76 @@ call plug#end()
 
 " KEYMAP 
 let mapleader=" "
+
+nnoremap <C-b> :call ToggleTree()<CR>
+map <C-_> :Commentary<CR>
+nnoremap <Tab> gt 
+nnoremap <S-Tab> gT 
+nnoremap <leader>h <C-w>h
+nnoremap <leader>j <C-w>j
+nnoremap <leader>k <C-w>k
+nnoremap <leader>l <C-w>l
+nnoremap <leader>r <C-w>r
+nnoremap <M-l> 2<c-w>>
+nnoremap <M-h> 2<c-w><
+nnoremap <M-j> 2<c-w>-
+nnoremap <M-k> 2<c-w>+
+tnoremap <Esc> <C-\><C-n>
+nnoremap <C-p> <cmd>tabe<cr><cmd>Telescope find_files theme=dropdown<cr>
+nnoremap <leader>p <cmd>Telescope find_files theme=dropdown<cr>
+command Tq :tabonly 
+
+" Other options
+let g:gruvbox_invert_selection=0
+colorscheme gruvbox
+let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#tabline#show_buffers = 0
+let g:airline#extensions#tabline#show_splits = 0
+let g:airline#extensions#tabline#show_tabs = 1
+let g:airline#extensions#tabline#show_tab_nr = 0
+let g:airline#extensions#tabline#show_tab_type = 0
+let g:airline#extensions#tabline#close_symbol = '×'
+let g:airline#extensions#tabline#show_close_button = 0
+let g:NERDTreeGitStatusUseNerdFonts = 1
+highlight Comment cterm=italic
+
+lua <<EOF
+-- TreeSitter
+require'nvim-treesitter.configs'.setup {
+  -- One of "all", "maintained" (parsers with maintainers), or a list of languages
+  ensure_installed = {"java", "typescript", "javascript", "html", "css", "go", "python"},
+  -- Install languages synchronously (only applied to `ensure_installed`)
+  sync_install = false,
+  highlight = {
+    -- `false` will disable the whole extension
+    enable = true,
+    -- Setting this to true will run `:h syntax` and tree-sitter at the same time.
+    -- Set this to `true` if you depend on 'syntax' being enabled (like for indentation).
+    -- Using this option may slow down your editor, and you may see some duplicate highlights.
+    -- Instead of true it can also be a list of languages
+    additional_vim_regex_highlighting = false,
+  },
+}
+
+-- Telescope
+local telescope = require('telescope')
+telescope.setup {
+    pickers ={
+        find_files = {
+            hidden = true
+        }
+    },
+    file_ignore_patterns = {
+        "./node_modules/*", "node_modules", "^node_modules/*", "node_modules/*", ".git"
+    },
+}
+EOF
+
+" Snippets
+autocmd filetype java ab <buffer> sys System.out.println();<Left><Left>
+autocmd filetype java ab <buffer> out. out.println();<Left><Left>
+autocmd filetype java ab <buffer> cl Console.log();<Left><Left>
+autocmd filetype java ab <buffer> itn int
 
 " Check if NERDTree is open or active
 function! IsNERDTreeOpen()
@@ -85,57 +159,3 @@ function! ToggleTree()
   endif
 endfunction
 
-nnoremap <C-b> :call ToggleTree()<CR>
-map <C-_> :Commentary<CR>
-nnoremap <Tab> gt 
-nnoremap <S-Tab> gT 
-nnoremap <leader>h <C-w>h
-nnoremap <leader>j <C-w>j
-nnoremap <leader>k <C-w>k
-nnoremap <leader>l <C-w>l
-nnoremap <leader>r <C-w>r
-nnoremap <M-l> 2<c-w>>
-nnoremap <M-h> 2<c-w><
-nnoremap <M-j> 2<c-w>-
-nnoremap <M-k> 2<c-w>+
-tnoremap <Esc> <C-\><C-n>
-command Tq :tabonly 
-
-" Other options
-let g:gruvbox_invert_selection=0
-colorscheme gruvbox
-let g:airline#extensions#tabline#enabled = 1
-let g:airline#extensions#tabline#show_buffers = 0
-let g:airline#extensions#tabline#show_splits = 0
-let g:airline#extensions#tabline#show_tabs = 1
-let g:airline#extensions#tabline#show_tab_nr = 0
-let g:airline#extensions#tabline#show_tab_type = 0
-let g:airline#extensions#tabline#close_symbol = '×'
-let g:airline#extensions#tabline#show_close_button = 0
-let g:NERDTreeGitStatusUseNerdFonts = 1
-highlight Comment cterm=italic
-
-lua <<EOF
-require'nvim-treesitter.configs'.setup {
-  -- One of "all", "maintained" (parsers with maintainers), or a list of languages
-  ensure_installed = {"java", "typescript", "javascript", "html", "css", "go", "python"},
-  -- Install languages synchronously (only applied to `ensure_installed`)
-  sync_install = false,
-  highlight = {
-    -- `false` will disable the whole extension
-    enable = true,
-    -- Setting this to true will run `:h syntax` and tree-sitter at the same time.
-    -- Set this to `true` if you depend on 'syntax' being enabled (like for indentation).
-    -- Using this option may slow down your editor, and you may see some duplicate highlights.
-    -- Instead of true it can also be a list of languages
-    additional_vim_regex_highlighting = false,
-  },
-}
-
-EOF
-
-" Snippets
-autocmd filetype java ab <buffer> sys System.out.println();<Left><Left>
-autocmd filetype java ab <buffer> out. out.println();<Left><Left>
-autocmd filetype java ab <buffer> cl Console.log();<Left><Left>
-autocmd filetype java ab <buffer> itn int
