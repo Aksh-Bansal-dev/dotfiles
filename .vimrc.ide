@@ -234,6 +234,19 @@ require("null-ls").setup({
     },
 })
 
+-- Telescope
+local telescope = require('telescope')
+telescope.setup {
+    pickers ={
+        find_files = {
+            hidden = true
+        }
+    },
+    file_ignore_patterns = {
+        "./node_modules/*", "node_modules", "^node_modules/*", "node_modules/*", ".git"
+    },
+}
+
 -- gitsigns setup
 require('gitsigns').setup()
 EOF

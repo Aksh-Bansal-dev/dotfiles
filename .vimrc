@@ -38,10 +38,6 @@ Plug 'tpope/vim-commentary'
 " Theme
 Plug 'morhetz/gruvbox'
 
-" Telescope (require BurntSushi/ripgrep)
-Plug 'nvim-lua/plenary.nvim'
-Plug 'nvim-telescope/telescope.nvim'
-
 " lsp, treesitter, autocomplete
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 
@@ -70,8 +66,6 @@ nnoremap <M-h> 2<c-w><
 nnoremap <M-j> 2<c-w>-
 nnoremap <M-k> 2<c-w>+
 tnoremap <Esc> <C-\><C-n>
-nnoremap <C-p> <cmd>tabe<cr><cmd>Telescope find_files theme=dropdown<cr>
-nnoremap <leader>p <cmd>Telescope find_files theme=dropdown<cr>
 command Tq :tabonly 
 
 " Other options
@@ -106,18 +100,6 @@ require'nvim-treesitter.configs'.setup {
   },
 }
 
--- Telescope
-local telescope = require('telescope')
-telescope.setup {
-    pickers ={
-        find_files = {
-            hidden = true
-        }
-    },
-    file_ignore_patterns = {
-        "./node_modules/*", "node_modules", "^node_modules/*", "node_modules/*", ".git"
-    },
-}
 EOF
 
 " Snippets
