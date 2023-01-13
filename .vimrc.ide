@@ -30,8 +30,8 @@ call plug#begin('~/.vim/plugged')
 
 " Nerdtree
 Plug 'preservim/nerdtree' 
-Plug 'Xuyuanp/nerdtree-git-plugin'
 Plug 'ryanoasis/vim-devicons'
+Plug 'Xuyuanp/nerdtree-git-plugin'
 
 " Comments
 Plug 'tpope/vim-commentary' 
@@ -39,12 +39,14 @@ Plug 'tpope/vim-commentary'
 " Theme
 Plug 'morhetz/gruvbox'
 
-" Telescope
+" Telescope 
 Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-telescope/telescope.nvim'
 
 " lsp, treesitter, autocomplete
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+Plug 'williamboman/mason.nvim'
+Plug 'williamboman/mason-lspconfig.nvim'
 Plug 'neovim/nvim-lspconfig'
 Plug 'hrsh7th/nvim-cmp' " Autocompletion plugin
 Plug 'hrsh7th/cmp-nvim-lsp' " LSP source for nvim-cmp
@@ -52,12 +54,12 @@ Plug 'saadparwaiz1/cmp_luasnip' " Snippets source for nvim-cmp
 Plug 'L3MON4D3/LuaSnip' " Snippets plugin
 Plug 'jose-elias-alvarez/null-ls.nvim' " linting, formatting
 
+" Airlines
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+
 " Git lines on side
 Plug 'lewis6991/gitsigns.nvim'
-
-" Airlines
-" Plug 'vim-airline/vim-airline'
-" Plug 'vim-airline/vim-airline-themes'
 
 call plug#end()
 " : PlugInstall to install theme
@@ -65,39 +67,6 @@ call plug#end()
 
 " KEYMAP 
 let mapleader=" "
-
-" Check if NERDTree is open or active
-function! IsNERDTreeOpen()
-  return exists("t:NERDTreeBufName") && (bufwinnr(t:NERDTreeBufName) != -1)
-endfunction
-
-function! CheckIfCurrentBufferIsFile()
-  return strlen(expand('%')) > 0
-endfunction
-
-" Call NERDTreeFind iff NERDTree is active, current window contains a modifiable
-" file, and we're not in vimdiff
-function! SyncTree()
-  if &modifiable && IsNERDTreeOpen() && CheckIfCurrentBufferIsFile() && !&diff
-    NERDTreeFind
-    wincmd p
-  endif
-endfunction
-
-" Highlight currently open buffer in NERDTree
-autocmd BufRead * call SyncTree()
-
-function! ToggleTree()
-  if CheckIfCurrentBufferIsFile()
-    if IsNERDTreeOpen()
-      NERDTreeClose
-    else
-      NERDTreeFind
-    endif
-  else
-    NERDTree
-  endif
-endfunction
 
 nnoremap <C-b> :call ToggleTree()<CR>
 map <C-_> :Commentary<CR>
@@ -115,7 +84,6 @@ nnoremap <M-k> 2<c-w>+
 tnoremap <Esc> <C-\><C-n>
 nnoremap <C-p> <cmd>tabe<cr><cmd>Telescope find_files theme=dropdown<cr>
 nnoremap <leader>p <cmd>Telescope find_files theme=dropdown<cr>
-nnoremap <leader>f <cmd>lua vim.lsp.buf.formatting()<CR>
 command Tq :tabonly 
 
 " Other options
@@ -129,18 +97,28 @@ let g:airline#extensions#tabline#show_tab_nr = 0
 let g:airline#extensions#tabline#show_tab_type = 0
 let g:airline#extensions#tabline#close_symbol = '×'
 let g:airline#extensions#tabline#show_close_button = 0
+let g:airline#extensions#nvimlsp#enabled=0
 let g:NERDTreeGitStatusUseNerdFonts = 1
+let g:NERDTreeShowHidden=1
 highlight Comment cterm=italic
 
 lua <<EOF
+-- TreeSitter
 require'nvim-treesitter.configs'.setup {
   -- One of "all", "maintained" (parsers with maintainers), or a list of languages
-  ensure_installed = {"java", "typescript", "javascript", "html", "css", "go", "python"},
+  ensure_installed = {"java", "typescript", "javascript", "html", "css", "go", "python", "vim", "lua"},
   -- Install languages synchronously (only applied to `ensure_installed`)
   sync_install = false,
   highlight = {
     -- `false` will disable the whole extension
     enable = true,
+    disable = function(lang, buf)
+        local max_filesize = 100 * 1024 -- 100 KB
+        local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(buf))
+        if ok and stats and stats.size > max_filesize then
+            return true
+        end
+    end,
     -- Setting this to true will run `:h syntax` and tree-sitter at the same time.
     -- Set this to `true` if you depend on 'syntax' being enabled (like for indentation).
     -- Using this option may slow down your editor, and you may see some duplicate highlights.
@@ -149,7 +127,11 @@ require'nvim-treesitter.configs'.setup {
   },
 }
 
-require'lspconfig'.pyright.setup{}
+-- Auto LSP Installer (Mason)
+require("mason").setup()
+require("mason-lspconfig").setup()
+
+-- LSP stuff
 local opts = { noremap=true, silent=true }
 
 -- Use an on_attach function to only map the following keys
@@ -162,15 +144,11 @@ local on_attach = function(client, bufnr)
   vim.api.nvim_buf_set_keymap(bufnr, 'n', 'gd', '<cmd>lua vim.lsp.buf.definition()<CR>', opts)
   vim.api.nvim_buf_set_keymap(bufnr, 'n', 'K', '<cmd>lua vim.lsp.buf.hover()<CR>', opts)
   vim.api.nvim_buf_set_keymap(bufnr, 'n', '<leader>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
-  if client.name == 'tsserver' then
-    client.resolved_capabilities.document_formatting = false
-  end
-  vim.api.nvim_buf_set_keymap(bufnr, 'n', '<space>f', '<cmd>lua vim.lsp.buf.formatting()<CR>', opts)
+  vim.api.nvim_buf_set_keymap(bufnr, 'n', '<space>f', '<cmd>lua vim.lsp.buf.format{filter=function(client)return client.name~="tsserver"end,timeout_ms = 2000}<CR>', opts)
 end
 
-local capabilities = vim.lsp.protocol.make_client_capabilities()
-capabilities = require('cmp_nvim_lsp').update_capabilities(capabilities)
-local servers = { 'pyright','tsserver' }
+local capabilities = require("cmp_nvim_lsp").default_capabilities()
+local servers = { 'pyright','tsserver','gopls' }
 for _, lsp in pairs(servers) do
   require('lspconfig')[lsp].setup {
     on_attach = on_attach,
@@ -224,7 +202,6 @@ cmp.setup {
 }
 
 -- null-ls
-local augroup = vim.api.nvim_create_augroup("LspFormatting", {})
 require("null-ls").setup({
     sources = {
         require("null-ls").builtins.diagnostics.eslint,
@@ -256,3 +233,37 @@ autocmd filetype java ab <buffer> sys System.out.println();<Left><Left>
 autocmd filetype java ab <buffer> out. out.println();<Left><Left>
 autocmd filetype java ab <buffer> cl Console.log();<Left><Left>
 autocmd filetype java ab <buffer> itn int
+
+" Check if NERDTree is open or active
+function! IsNERDTreeOpen()
+  return exists("t:NERDTreeBufName") && (bufwinnr(t:NERDTreeBufName) != -1)
+endfunction
+
+function! CheckIfCurrentBufferIsFile()
+  return strlen(expand('%')) > 0
+endfunction
+
+" Call NERDTreeFind iff NERDTree is active, current window contains a modifiable
+" file, and we're not in vimdiff
+function! SyncTree()
+  if &modifiable && IsNERDTreeOpen() && CheckIfCurrentBufferIsFile() && !&diff
+    NERDTreeFind
+    wincmd p
+  endif
+endfunction
+
+" Highlight currently open buffer in NERDTree
+autocmd BufRead * call SyncTree()
+
+function! ToggleTree()
+  if CheckIfCurrentBufferIsFile()
+    if IsNERDTreeOpen()
+      NERDTreeClose
+    else
+      NERDTreeFind
+    endif
+  else
+    NERDTree
+  endif
+endfunction
+
