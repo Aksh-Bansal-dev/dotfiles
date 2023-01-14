@@ -29,9 +29,8 @@ set splitright
 call plug#begin('~/.vim/plugged')
 
 " Nerdtree
-Plug 'preservim/nerdtree' 
-Plug 'ryanoasis/vim-devicons'
-Plug 'Xuyuanp/nerdtree-git-plugin'
+Plug 'nvim-tree/nvim-web-devicons' " optional, for file icons
+Plug 'nvim-tree/nvim-tree.lua'
 
 " Comments
 Plug 'tpope/vim-commentary' 
@@ -68,7 +67,7 @@ call plug#end()
 " KEYMAP 
 let mapleader=" "
 
-nnoremap <C-b> :call ToggleTree()<CR>
+nnoremap <C-b> :NvimTreeToggle<CR>
 map <C-_> :Commentary<CR>
 nnoremap <Tab> gt 
 nnoremap <S-Tab> gT 
@@ -223,6 +222,26 @@ telescope.setup {
     file_ignore_patterns = { "^./.git/" },
 }
 
+-- Nvim-tree
+-- disable netrw at the very start of your init.lua (strongly advised)
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
+
+-- set termguicolors to enable highlight groups
+vim.opt.termguicolors = true
+
+require("nvim-tree").setup({
+    view = {
+        mappings = {
+            list = {
+                { key = "t", action = "tabnew" },
+                { key = "d", action = "trash" },
+                { key = "D", action = "remove" },
+            },
+        },
+    },
+})
+
 -- gitsigns setup
 require('gitsigns').setup()
 EOF
@@ -232,37 +251,4 @@ autocmd filetype java ab <buffer> sys System.out.println();<Left><Left>
 autocmd filetype java ab <buffer> out. out.println();<Left><Left>
 autocmd filetype java ab <buffer> cl Console.log();<Left><Left>
 autocmd filetype java ab <buffer> itn int
-
-" Check if NERDTree is open or active
-function! IsNERDTreeOpen()
-  return exists("t:NERDTreeBufName") && (bufwinnr(t:NERDTreeBufName) != -1)
-endfunction
-
-function! CheckIfCurrentBufferIsFile()
-  return strlen(expand('%')) > 0
-endfunction
-
-" Call NERDTreeFind iff NERDTree is active, current window contains a modifiable
-" file, and we're not in vimdiff
-function! SyncTree()
-  if &modifiable && IsNERDTreeOpen() && CheckIfCurrentBufferIsFile() && !&diff
-    NERDTreeFind
-    wincmd p
-  endif
-endfunction
-
-" Highlight currently open buffer in NERDTree
-autocmd BufRead * call SyncTree()
-
-function! ToggleTree()
-  if CheckIfCurrentBufferIsFile()
-    if IsNERDTreeOpen()
-      NERDTreeClose
-    else
-      NERDTreeFind
-    endif
-  else
-    NERDTree
-  endif
-endfunction
 
