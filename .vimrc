@@ -65,6 +65,7 @@ nnoremap <M-l> 2<c-w>>
 nnoremap <M-h> 2<c-w><
 nnoremap <M-j> 2<c-w>-
 nnoremap <M-k> 2<c-w>+
+vnoremap p "_dP
 tnoremap <Esc> <C-\><C-n>
 command Tq :tabonly 
 
