@@ -44,11 +44,15 @@ Plug 'nvim-telescope/telescope.nvim'
 
 " lsp, treesitter, autocomplete, mason
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+
 Plug 'williamboman/mason.nvim'
 Plug 'williamboman/mason-lspconfig.nvim'
+
 Plug 'neovim/nvim-lspconfig'
 Plug 'hrsh7th/nvim-cmp' " Autocompletion plugin
 Plug 'hrsh7th/cmp-nvim-lsp' " LSP source for nvim-cmp
+Plug 'hrsh7th/cmp-buffer' " Autocomplete words from current buffer
+Plug 'hrsh7th/cmp-path' " Autocomplete path
 Plug 'saadparwaiz1/cmp_luasnip' " Snippets source for nvim-cmp
 Plug 'L3MON4D3/LuaSnip' " Snippets plugin
 Plug 'jose-elias-alvarez/null-ls.nvim' " linting, formatting
@@ -140,6 +144,7 @@ local opts = { noremap=true, silent=true }
 -- after the language server attaches to the current buffer
 local on_attach = function(client, bufnr)
   vim.api.nvim_set_keymap('n', 'gh', '<cmd>lua vim.diagnostic.open_float()<CR>', opts)
+  vim.api.nvim_set_keymap('n', 'K', '<cmd>lua vim.lsp.buf.hover()<CR>', opts)
   vim.api.nvim_set_keymap('n', '[d', '<cmd>lua vim.diagnostic.goto_prev()<CR>', opts)
   vim.api.nvim_set_keymap('n', ']d', '<cmd>lua vim.diagnostic.goto_next()<CR>', opts)
   -- Mappings.
@@ -199,7 +204,9 @@ cmp.setup {
   }),
   sources = {
     { name = 'nvim_lsp' },
+    { name = 'path' },
     { name = 'luasnip' },
+    { name = 'buffer' },
   },
 }
 
