@@ -1,7 +1,9 @@
 set runtimepath^=~/.vim runtimepath+=~/.vim/after
 let &packpath = &runtimepath
 source ~/.vimrc
+" vim.cmd('source ~/.vimrc')
 
+" Task runner
 lua << EOF
     local pickers = require "telescope.pickers"
     local finders = require "telescope.finders"
@@ -10,9 +12,8 @@ lua << EOF
     local action_state = require "telescope.actions.state"
 
     local tasks = {
-        {"run neofetch", "neofetch"},
-        {"print hello", "echo hiiiii"},
-        {"python serve", "python3 -m http.server"}
+        {"markserv", "markserv", "RELATIVE_BUF_NAME"},
+        {"python http serve", "python3 -m http.server", ""}
     }
 
     function runtask(opts)
@@ -36,11 +37,20 @@ lua << EOF
             actions.close(prompt_bufnr)
             local selection = action_state.get_selected_entry()
             -- print(vim.inspect(selection.value[1]))
-            vim.cmd(string.format("tabe | term %s",selection.value[2]))
+            if selection.value[3] == "RELATIVE_BUF_NAME" then
+                local relBufName = vim.fn.expand("%")
+                vim.cmd(string.format("tabe | term %s %s",selection.value[2],relBufName))
+            elseif selection.value[3] == "BUF_NAME" then
+                local bufName = vim.api.nvim_buf_get_name(0)
+                vim.cmd(string.format("tabe | term %s %s",selection.value[2],bufName))
+            else
+                vim.cmd(string.format("tabe | term %s",selection.value[2]))
+            end
           end)
           return true
         end,
       }):find()
     end
 
+    vim.api.nvim_set_keymap("n","<leader>rt",":lua runtask()<CR>", {noremap = true})
 EOF
