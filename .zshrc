@@ -115,4 +115,11 @@ source $ZSH/oh-my-zsh.sh
 # Alias
 alias cdcp="cd ~/d/code/java/competitive\ programming/"
 alias vim="nvim"
-alias runc='function runner(){g++ $1; ./a.out;rm a.out;};runner'
+alias dush='du -hs $(ls -A) | sort -h '
+
+# Gopls
+export EDITOR=nvim
+export PATH=$PATH:/usr/local/go/bin
+export GOPATH=$HOME/go
+export PATH=$PATH:$GOROOT/bin:$GOPATH/bin
+
