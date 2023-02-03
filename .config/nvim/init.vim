@@ -38,7 +38,9 @@ lua << EOF
             local selection = action_state.get_selected_entry()
             -- print(vim.inspect(selection.value[1]))
             if selection.value[3] == "RELATIVE_BUF_NAME" then
-                local relBufName = vim.fn.expand("%")
+                local compPath = vim.fn.expand("%")
+                local dirPath = vim.fn.expand("%:h")
+                local relBufName = string.sub(compPath,string.len(dirPath)+2,string.len(compPath))
                 vim.cmd(string.format("tabe | term %s %s",selection.value[2],relBufName))
             elseif selection.value[3] == "BUF_NAME" then
                 local bufName = vim.api.nvim_buf_get_name(0)
@@ -54,3 +56,4 @@ lua << EOF
 
     vim.api.nvim_set_keymap("n","<leader>rt",":lua runtask()<CR>", {noremap = true})
 EOF
+
