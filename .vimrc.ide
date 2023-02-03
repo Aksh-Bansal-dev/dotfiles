@@ -106,7 +106,7 @@ let g:airline#extensions#tabline#show_close_button = 0
 let g:airline#extensions#nvimlsp#enabled=0
 let g:NERDTreeGitStatusUseNerdFonts = 1
 let g:NERDTreeShowHidden=1
-highlight Comment cterm=italic
+highlight Comment cterm=italic gui=italic
 
 lua <<EOF
 -- TreeSitter
@@ -206,7 +206,7 @@ cmp.setup {
     { name = 'nvim_lsp' },
     { name = 'path' },
     { name = 'luasnip' },
-    { name = 'buffer' },
+    { name = 'buffer', keyword_length=4 },
   },
 }
 
