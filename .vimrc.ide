@@ -247,6 +247,8 @@ require("nvim-tree").setup({
                 { key = "t", action = "tabnew" },
                 { key = "d", action = "trash" },
                 { key = "D", action = "remove" },
+                { key = "<Tab>", action = "close" },
+                { key = "go", action = "preview" },
             },
         },
     },
