@@ -116,6 +116,7 @@ source $ZSH/oh-my-zsh.sh
 alias cdcp="cd ~/d/code/java/competitive\ programming/"
 alias vim="nvim"
 alias dush='du -hs $(ls -A) | sort -h '
+alias reth='watch -n 600 "nmcli dev disconnect enx1027f5517b84 && nmcli dev connect enx1027f5517b84"'
 
 # Gopls
 export EDITOR=nvim
