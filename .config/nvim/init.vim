@@ -40,7 +40,7 @@ lua << EOF
             if selection.value[3] == "RELATIVE_BUF_NAME" then
                 local compPath = vim.fn.expand("%")
                 local dirPath = vim.fn.expand("%:h")
-                local relBufName = string.sub(compPath,string.len(dirPath)+2,string.len(compPath))
+                local relBufName = string.sub(compPath,string.len(dirPath),string.len(compPath))
                 vim.cmd(string.format("tabe | term %s %s",selection.value[2],relBufName))
             elseif selection.value[3] == "BUF_NAME" then
                 local bufName = vim.api.nvim_buf_get_name(0)
