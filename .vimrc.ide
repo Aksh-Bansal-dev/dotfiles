@@ -28,6 +28,9 @@ set splitright
 " Plugins will be downloaded under the specified directory.
 call plug#begin('~/.vim/plugged')
 
+" Autopair
+Plug 'windwp/nvim-autopairs'
+
 " nvim-tree
 Plug 'nvim-tree/nvim-web-devicons' " optional, for file icons
 Plug 'nvim-tree/nvim-tree.lua'
@@ -113,6 +116,9 @@ let g:NERDTreeShowHidden=1
 highlight Comment cterm=italic gui=italic
 
 lua <<EOF
+-- autopair
+require("nvim-autopairs").setup()
+
 -- TreeSitter
 require'nvim-treesitter.configs'.setup {
   -- One of "all", "maintained" (parsers with maintainers), or a list of languages
@@ -281,7 +287,4 @@ autocmd filetype java ab <buffer> sys System.out.println();<Left><Left>
 autocmd filetype java ab <buffer> out. out.println();<Left><Left>
 autocmd filetype java ab <buffer> cl Console.log();<Left><Left>
 autocmd filetype java ab <buffer> itn int
-
-
-
 
