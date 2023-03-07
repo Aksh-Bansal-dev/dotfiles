@@ -64,6 +64,9 @@ Plug 'vim-airline/vim-airline-themes'
 " Git lines on side
 Plug 'lewis6991/gitsigns.nvim'
 
+" Scrollbar
+Plug 'petertriho/nvim-scrollbar'
+
 call plug#end()
 " : PlugInstall to install theme
 
@@ -264,6 +267,13 @@ require("nvim-tree").setup({
 
 -- gitsigns setup
 require('gitsigns').setup()
+
+-- scrollbar
+require("scrollbar").setup({
+    handlers = {
+        gitsigns = true
+    }
+})
 EOF
 
 " Snippets
@@ -271,5 +281,7 @@ autocmd filetype java ab <buffer> sys System.out.println();<Left><Left>
 autocmd filetype java ab <buffer> out. out.println();<Left><Left>
 autocmd filetype java ab <buffer> cl Console.log();<Left><Left>
 autocmd filetype java ab <buffer> itn int
+
+
 
 
