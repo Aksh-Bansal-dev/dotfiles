@@ -40,6 +40,7 @@ Plug 'tpope/vim-commentary'
 
 " Theme
 Plug 'morhetz/gruvbox'
+Plug 'catppuccin/nvim', { 'as': 'catppuccin' }
 
 " Telescope (require BurntSushi/ripgrep)
 Plug 'nvim-lua/plenary.nvim'
@@ -100,7 +101,8 @@ command Tq :tabonly
 
 " Other options
 let g:gruvbox_invert_selection=0
-colorscheme gruvbox
+" colorscheme gruvbox
+colorscheme catppuccin
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#show_buffers = 0
 let g:airline#extensions#tabline#show_splits = 0
