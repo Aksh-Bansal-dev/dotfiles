@@ -115,11 +115,11 @@ source $ZSH/oh-my-zsh.sh
 # Alias
 alias cdcp="cd ~/d/code/java/competitive\ programming/"
 alias vim="nvim"
-alias dush='du -hs $(ls -A) | sort -h '
+alias dush="ls -A | sed -e 's/^/\"/g' -e 's/$/\"/g' | tr '\n' ' ' | xargs du -sh | sort -h"
 alias reth='watch -n 1200 "nmcli dev disconnect enx1027f5517b84 && nmcli dev connect enx1027f5517b84"'
 
-# Gopls
 export EDITOR=nvim
+
 export PATH=$PATH:/usr/local/go/bin
 export GOPATH=$HOME/go
 export PATH=$PATH:$GOROOT/bin:$GOPATH/bin
