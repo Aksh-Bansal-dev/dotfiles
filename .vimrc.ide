@@ -61,12 +61,13 @@ Plug 'saadparwaiz1/cmp_luasnip' " Snippets source for nvim-cmp
 Plug 'L3MON4D3/LuaSnip' " Snippets plugin
 Plug 'jose-elias-alvarez/null-ls.nvim' " linting, formatting
 
+" Git lines on side
+Plug 'lewis6991/gitsigns.nvim'
+Plug 'tpope/vim-fugitive'
+
 " Airlines
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
-
-" Git lines on side
-Plug 'lewis6991/gitsigns.nvim'
 
 " Scrollbar
 Plug 'petertriho/nvim-scrollbar'
@@ -111,6 +112,7 @@ let g:airline#extensions#tabline#show_tab_nr = 0
 let g:airline#extensions#tabline#show_tab_type = 0
 let g:airline#extensions#tabline#close_symbol = '×'
 let g:airline#extensions#tabline#show_close_button = 0
+let g:airline#extensions#branch#enabled = 1
 let g:airline#extensions#nvimlsp#enabled=0
 let g:airline_powerline_fonts = 1
 let g:NERDTreeGitStatusUseNerdFonts = 1
