@@ -81,8 +81,8 @@ let mapleader=" "
 
 nnoremap <C-b> :NvimTreeToggle<CR>
 map <C-_> :Commentary<CR>
-nnoremap <Tab> gt 
-nnoremap <S-Tab> gT 
+nnoremap <leader>] gt 
+nnoremap <leader>[ gT 
 nnoremap <leader>h <C-w>h
 nnoremap <leader>j <C-w>j
 nnoremap <leader>k <C-w>k
@@ -224,6 +224,20 @@ cmp.setup {
     { name = 'buffer', keyword_length=4 },
   },
 }
+-- fixes cursor jumping on tab
+function leave_snippet()
+    if
+        ((vim.v.event.old_mode == 's' and vim.v.event.new_mode == 'n') or vim.v.event.old_mode == 'i')
+        and require('luasnip').session.current_nodes[vim.api.nvim_get_current_buf()]
+        and not require('luasnip').session.jump_active
+    then
+        require('luasnip').unlink_current()
+    end
+end
+-- stop snippets when you leave to normal mode
+vim.api.nvim_command([[
+    autocmd ModeChanged * lua leave_snippet()
+]])
 
 -- null-ls
 require("null-ls").setup({
@@ -254,21 +268,18 @@ vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
 -- set termguicolors to enable highlight groups
 vim.opt.termguicolors = true
-local function my_on_attach(bufnr)
-    local api = require('nvim-tree.api')
-    local function opts(desc)
-      return { desc = 'nvim-tree: ' .. desc, buffer = bufnr, noremap = true, silent = true, nowait = true }
-    end
-    api.config.mappings.default_on_attach(bufnr)
-    vim.keymap.set('n', 't', api.node.open.tab, opts('Open: New Tab'))
-    vim.keymap.set('n', 'd', api.fs.trash, opts('Trash'))
-    vim.keymap.set('n', 'D', api.fs.remove, opts('Delete'))
-    vim.keymap.set('n', '<Tab>', api.tree.close, opts('Close'))
-    vim.keymap.set('n', 'go', api.node.open.preview, opts('Open Preview'))
-    ---
-  end
 require("nvim-tree").setup({
-    on_attach = my_on_attach,
+    view = {
+        mappings = {
+            list = {
+                { key = "t", action = "tabnew" },
+                { key = "d", action = "trash" },
+                { key = "D", action = "remove" },
+                { key = "<Tab>", action = "close" },
+                { key = "go", action = "preview" },
+            },
+        },
+    },
     filters = {
         dotfiles = false,
         git_clean = false,
