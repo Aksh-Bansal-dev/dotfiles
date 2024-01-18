@@ -115,8 +115,14 @@ source $ZSH/oh-my-zsh.sh
 # Alias
 alias cdcp="cd ~/d/code/java/competitive\ programming/"
 alias vim="nvim"
-alias dush="ls -A | sed -e 's/^/\"/g' -e 's/$/\"/g' | tr '\n' ' ' | xargs du -sh | sort -h"
+# alias dush="ls -A $1 | sed -e 's/^/\"/g' -e 's/$/\"/g' | tr '\n' ' ' | xargs du -sh | sort -h"
 alias reth='watch -n 1200 "nmcli dev disconnect enx1027f5517b84 && nmcli dev connect enx1027f5517b84"'
+dush () {
+  loc=${1:-'.'}
+  loc_sed=$(echo "$loc" | sed -e 's/\/$//g' -e 's/\//\\\//g') 
+  echo "$loc"
+  ls -A "$loc" | sed -e "s/^/$loc_sed\//g" -e 's/^/\"/g' -e 's/$/\"/g' | tr '\n' ' ' | xargs du -sh | sort -h
+}
 
 export EDITOR=nvim
 
