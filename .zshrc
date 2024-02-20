@@ -124,6 +124,8 @@ dush () {
   ls -A "$loc" | sed -e "s/^/$loc_sed\//g" -e 's/^/\"/g' -e 's/$/\"/g' | tr '\n' ' ' | xargs du -sh | sort -h
 }
 
+# SETUP OH-MY-ZSH BEFORE POWERLEVEL10K
+
 export EDITOR=nvim
 
 export PATH=$PATH:/usr/local/go/bin
