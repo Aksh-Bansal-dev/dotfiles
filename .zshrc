@@ -123,8 +123,34 @@ dush () {
   echo "$loc"
   ls -A "$loc" | sed -e "s/^/$loc_sed\//g" -e 's/^/\"/g' -e 's/$/\"/g' | tr '\n' ' ' | xargs du -sh | sort -h
 }
+gitup() {
+    git fetch origin main 
+    git checkout main 
+    git stash 
+    git rebase origin/main
+    git stash pop
+    git checkout -b "patch-$1"
+}
 
 # SETUP OH-MY-ZSH BEFORE POWERLEVEL10K
+# HISTFILE=~/.zsh_history 
+# HISTSIZE=10000000 
+# SAVEHIST=10000000 
+# setopt SHARE_HISTORY 
+
+# start typing + [Up-Arrow] - fuzzy find history forward 
+# if [[ "${terminfo[kcuu1]}" != "" ]]; then 
+#     autoload -U up-line-or-beginning-search 
+#     zle -N up-line-or-beginning-search 
+#     bindkey "${terminfo[kcuu1]}" up-line-or-beginning-search 
+# fi 
+
+# start typing + [Down-Arrow] - fuzzy find history backward 
+# if [[ "${terminfo[kcud1]}" != "" ]]; then 
+#     autoload -U down-line-or-beginning-search 
+#     zle -N down-line-or-beginning-search 
+#     bindkey "${terminfo[kcud1]}" down-line-or-beginning-search 
+# fi
 
 export EDITOR=nvim
 
