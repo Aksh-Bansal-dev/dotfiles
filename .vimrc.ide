@@ -97,7 +97,6 @@ tnoremap <Esc> <C-\><C-n>
 nnoremap <C-p> <cmd>tabe<cr><cmd>Telescope find_files theme=dropdown<cr>
 nnoremap <C-f> <cmd>tabe<cr><cmd>Telescope live_grep<cr>
 nnoremap <leader>p <cmd>Telescope find_files theme=dropdown<cr>
-command Tq :tabonly 
 
 
 " Other options
