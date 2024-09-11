@@ -81,7 +81,7 @@ call plug#end()
 let mapleader=" "
 
 nnoremap <C-b> :NvimTreeToggle<CR>
-map <C-/> :Commentary<CR>
+map <C-/> :Commentary<CR>   " for linux:    map <C-_> :Commentary<CR>
 nnoremap <leader>] gt 
 nnoremap <leader>[ gT 
 nnoremap <leader>h <C-w>h
