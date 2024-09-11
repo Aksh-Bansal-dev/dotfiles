@@ -60,6 +60,7 @@ Plug 'hrsh7th/cmp-path' " Autocomplete path
 Plug 'saadparwaiz1/cmp_luasnip' " Snippets source for nvim-cmp
 Plug 'L3MON4D3/LuaSnip' " Snippets plugin
 Plug 'nvimtools/none-ls.nvim' " linting, formatting
+Plug 'towolf/vim-helm'
 
 " Git lines on side
 Plug 'lewis6991/gitsigns.nvim'
@@ -80,7 +81,7 @@ call plug#end()
 let mapleader=" "
 
 nnoremap <C-b> :NvimTreeToggle<CR>
-map <C-_> :Commentary<CR>
+map <C-/> :Commentary<CR>
 nnoremap <leader>] gt 
 nnoremap <leader>[ gT 
 nnoremap <leader>h <C-w>h
@@ -125,7 +126,7 @@ require("nvim-autopairs").setup()
 -- TreeSitter
 require'nvim-treesitter.configs'.setup {
   -- One of "all", "maintained" (parsers with maintainers), or a list of languages
-  ensure_installed = {"java", "typescript", "javascript", "html", "css", "go", "python", "vim", "lua"},
+  ensure_installed = "all",
   -- Install languages synchronously (only applied to `ensure_installed`)
   sync_install = false,
   highlight = {
@@ -165,11 +166,11 @@ local on_attach = function(client, bufnr)
   vim.api.nvim_buf_set_keymap(bufnr, 'n', 'K', '<cmd>lua vim.lsp.buf.hover()<CR>', opts)
   vim.api.nvim_buf_set_keymap(bufnr, 'n', '<leader>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
   vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
-  vim.api.nvim_buf_set_keymap(bufnr, 'n', '<space>f', [[<cmd> lua vim.lsp.buf.format{ filter=function(client)return client.name~="tsserver"end, timeout_ms = 2000 }<CR>]], opts)
+  vim.api.nvim_buf_set_keymap(bufnr, 'n', '<leader>f', [[<cmd> lua vim.lsp.buf.format{ filter=function(client)return client.name~="tsserver"end, timeout_ms = 2000 }<CR>]], opts)
 end
 
 local capabilities = require("cmp_nvim_lsp").default_capabilities()
-local servers = { 'pyright','tsserver','gopls' }
+local servers = {"pyright", "tsserver", "helm_ls", "gopls"}
 for _, lsp in pairs(servers) do
   require('lspconfig')[lsp].setup {
     on_attach = on_attach,
@@ -241,10 +242,12 @@ vim.api.nvim_command([[
 -- null-ls
 require("null-ls").setup({
     sources = {
+        require("null-ls").builtins.formatting.black,
+        require("null-ls").builtins.formatting.prettier,
+        require("null-ls").builtins.formatting.yamlfmt,
         require("null-ls").builtins.diagnostics.eslint,
         require("null-ls").builtins.code_actions.eslint,
         require("null-ls").builtins.formatting.eslint,
-        require("null-ls").builtins.formatting.prettier,
         require("null-ls").builtins.formatting.gofmt,
         require("null-ls").builtins.formatting.goimports
     }
@@ -325,4 +328,6 @@ autocmd filetype java ab <buffer> sys System.out.println();<Left><Left>
 autocmd filetype java ab <buffer> out. out.println();<Left><Left>
 autocmd filetype java ab <buffer> cl Console.log();<Left><Left>
 autocmd filetype java ab <buffer> itn int
+
+
 
