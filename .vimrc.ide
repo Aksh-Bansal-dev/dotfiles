@@ -59,6 +59,7 @@ Plug 'hrsh7th/cmp-buffer' " Autocomplete words from current buffer
 Plug 'hrsh7th/cmp-path' " Autocomplete path
 Plug 'saadparwaiz1/cmp_luasnip' " Snippets source for nvim-cmp
 Plug 'L3MON4D3/LuaSnip' " Snippets plugin
+Plug 'nvimtools/none-ls-extras.nvim'
 Plug 'nvimtools/none-ls.nvim' " linting, formatting
 Plug 'towolf/vim-helm'
 
@@ -245,9 +246,9 @@ require("null-ls").setup({
         require("null-ls").builtins.formatting.black,
         require("null-ls").builtins.formatting.prettier,
         require("null-ls").builtins.formatting.yamlfmt,
-        require("null-ls").builtins.diagnostics.eslint,
-        require("null-ls").builtins.code_actions.eslint,
-        require("null-ls").builtins.formatting.eslint,
+        require("none-ls.diagnostics.eslint_d"),
+        require("none-ls.formatting.eslint_d"),
+        require("none-ls.code_actions.eslint_d"),
         require("null-ls").builtins.formatting.gofmt,
         require("null-ls").builtins.formatting.goimports
     }
