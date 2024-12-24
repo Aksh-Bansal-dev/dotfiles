@@ -48,6 +48,7 @@ Plug 'nvim-telescope/telescope.nvim'
 
 " lsp, treesitter, autocomplete, mason
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+Plug 'nvim-treesitter/nvim-treesitter-context'
 
 Plug 'williamboman/mason.nvim'
 Plug 'williamboman/mason-lspconfig.nvim'
@@ -147,6 +148,10 @@ require'nvim-treesitter.configs'.setup {
     additional_vim_regex_highlighting = false,
   },
 }
+
+vim.keymap.set("n", "[c", function()
+  require("treesitter-context").go_to_context(vim.v.count1)
+end, { silent = true })
 
 -- Auto LSP Installer (Mason)
 require("mason").setup()
