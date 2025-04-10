@@ -129,7 +129,7 @@ gitup() {
     git stash 
     git rebase origin/main
     git stash pop
-    git checkout -b "patch-$1"
+    git checkout -b "aksh/$1/patch"
 }
 
 # SETUP OH-MY-ZSH BEFORE POWERLEVEL10K
