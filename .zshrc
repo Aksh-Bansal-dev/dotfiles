@@ -117,12 +117,18 @@ alias cdcp="cd ~/d/code/java/competitive\ programming/"
 alias vim="nvim"
 # alias dush="ls -A $1 | sed -e 's/^/\"/g' -e 's/$/\"/g' | tr '\n' ' ' | xargs du -sh | sort -h"
 alias reth='watch -n 1200 "nmcli dev disconnect enx1027f5517b84 && nmcli dev connect enx1027f5517b84"'
+
+# $ dush
+# list all files with their sizes in sorted order
 dush () {
   loc=${1:-'.'}
   loc_sed=$(echo "$loc" | sed -e 's/\/$//g' -e 's/\//\\\//g') 
   echo "$loc"
   ls -A "$loc" | sed -e "s/^/$loc_sed\//g" -e 's/^/\"/g' -e 's/$/\"/g' | tr '\n' ' ' | xargs du -sh | sort -h
 }
+
+# $ gitup 50
+# Create new branch with name 'aksh/50/patch'
 gitup() {
     git fetch origin main 
     git checkout main 
@@ -130,6 +136,12 @@ gitup() {
     git rebase origin/main
     git stash pop
     git checkout -b "aksh/$1/patch"
+}
+
+# $ gitclean [1-4]\d                     
+# This will delete all branches from 10 to 49
+gitclean() {
+    git branch -D `git branch | grep -E "aksh\/$1\/.*"` 
 }
 
 # SETUP OH-MY-ZSH BEFORE POWERLEVEL10K
