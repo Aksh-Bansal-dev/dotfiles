@@ -75,6 +75,10 @@ Plug 'vim-airline/vim-airline-themes'
 " Scrollbar
 Plug 'petertriho/nvim-scrollbar'
 
+" Indent black lines (ibl)
+Plug 'lukas-reineke/indent-blankline.nvim'
+
+
 call plug#end()
 " : PlugInstall to install theme
 
@@ -312,6 +316,10 @@ require("scrollbar").setup({
         gitsigns = true
     }
 })
+
+-- indent blank lines
+require("ibl").setup()
+
 
 if vim.fn.has('wsl') == 1 then 
     vim.g.clipboard = { 
