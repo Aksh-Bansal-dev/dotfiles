@@ -133,6 +133,7 @@ require("nvim-autopairs").setup()
 require'nvim-treesitter.configs'.setup {
   -- One of "all", "maintained" (parsers with maintainers), or a list of languages
   ensure_installed = "all",
+  ignore_install = { "ipkg" },
   -- Install languages synchronously (only applied to `ensure_installed`)
   sync_install = false,
   highlight = {
@@ -176,11 +177,11 @@ local on_attach = function(client, bufnr)
   vim.api.nvim_buf_set_keymap(bufnr, 'n', 'K', '<cmd>lua vim.lsp.buf.hover()<CR>', opts)
   vim.api.nvim_buf_set_keymap(bufnr, 'n', '<leader>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
   vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
-  vim.api.nvim_buf_set_keymap(bufnr, 'n', '<leader>f', [[<cmd> lua vim.lsp.buf.format{ filter=function(client)return client.name~="tsserver"end, timeout_ms = 2000 }<CR>]], opts)
+  vim.api.nvim_buf_set_keymap(bufnr, 'n', '<leader>f', [[<cmd> lua vim.lsp.buf.format{ filter=function(client)return client.name~="ts_ls"end, timeout_ms = 2000 }<CR>]], opts)
 end
 
 local capabilities = require("cmp_nvim_lsp").default_capabilities()
-local servers = {"pyright", "tsserver", "helm_ls", "gopls"}
+local servers = {"pyright", "ts_ls", "helm_ls", "gopls"}
 for _, lsp in pairs(servers) do
   require('lspconfig')[lsp].setup {
     on_attach = on_attach,
